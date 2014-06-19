@@ -41,29 +41,29 @@ void print(int x) {
 	HANDLE  hConsole;
     int k;
 	if (x==0) {
-		k=7;}
+		k=15;}
 	else if (x==2) {
-		k=1;}
+		k=112;}
 	else if (x==4) {
-		k=2;}
+		k=48;}
 	else if (x==8) {
-		k=3;}
+		k=32;}
 	else if (x==16) {
-		k=4;}
+		k=208;}
 	else if (x==32) {
-		k=5;}
+		k=192;}
 	else if (x==64) {
-		k=6;}
+		k=64;}
 	else {
-		k=8;}
+		k=224;}
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, k);
     if (x<10) {
-    	printf("    %d",x);}
+    	printf("  %d  ",x);}
     else if (x<100) {
-    	printf("   %d",x);}
+    	printf("  %d ",x);}
     else if (x<1000) {
-    	printf("  %d",x);}
+    	printf(" %d ",x);}
     else {
     	printf(" %d",x);}
     SetConsoleTextAttribute(hConsole, 7);
@@ -148,7 +148,34 @@ int main(int argc, char *argv[]) {
 		
 		/*down*/
 		if (move==80) {
-			
+			for (j=0; j<size; j++){
+				/*keep non-zero cells, put them in row with temp array and delete them from a*/
+				l=3;
+				for (i=3; i>=0; i=i-1) {
+					if (a[i][j]!=0) {
+						temp[l]=a[i][j];
+						a[i][j]=0;
+						l=l-1;
+					}
+				}
+				/*add adjacent equal cells and add to score*/
+				for (i=2; i>=0; i=i-1) {
+					if (temp[i]==temp[i+1]){
+						temp[i+1]=temp[i]+temp[i+1];
+						score=score+temp[i+1];
+						temp[i]=0;
+						flag=0; /*there are two equal adjacent cells, so game is not over*/
+					}
+				}
+				/* keep non-zero cells again and transfer them back to a*/
+				l=3;
+				for (i=3; i>=0; i=i-1) {
+					if (temp[i]!=0){
+						a[l][j]=temp[i];
+						l=l-1;
+					}
+				}
+			}
 		}
 		
 		/*left*/
@@ -161,25 +188,26 @@ int main(int argc, char *argv[]) {
 			
 		}
 		
-		srand(time(NULL));
-		insert(a);
+		if (move==72 || move==80 || move==75 || move==77) {
+			srand(time(NULL));
+			insert(a);
 			
-		/*print output*/
-	    system("cls"); /*clear screen to print new output*/
-		for (i=0; i<=size-1; i++) {
-			for (j=0; j<=size-1; j++) {
-				if (j<3) {
-			        print(a[i][j]);
+			/*print output*/
+	    	system("cls"); /*clear screen to print new output*/
+			for (i=0; i<=size-1; i++) {
+				for (j=0; j<=size-1; j++) {
+					if (j<3) {
+				        print(a[i][j]);
+					}
+					else {
+						print(a[i][j]);
+						printf("\n");
+						printf("\n");
+					}
 				}
-				else {
-					print(a[i][j]);
-					printf("\n");
-					printf("\n");
-				}
- 	
 			}
+			printf("Score: %d\n",score);
 		}
-		printf("Score: %d\n",score);
 	}
 	printf("GAME OVER\n");
 	return 0;	

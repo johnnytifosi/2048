@@ -25,15 +25,29 @@ int random_in_range (unsigned int min, unsigned int max)
 }
 
 /*function to insert numbers to empty slots*/
-void insert(int a[size][size]) {
-	int newi,newj,newnum;
-	do {
-		newi=random_in_range(0,size);
-		newj=random_in_range(0,size);
-	} while (a[newi][newj]!=0);
-	
-	newnum=random_in_range(1,3);
-	a[newi][newj]=2*newnum; /*new number must be 2 or 4*/
+void insert(int array[size][size]) {
+	/*printf("Entered function insert\n");*/
+	int i,j,newi,newj,newnum,flag;
+	/*check if there is an empty cell to insert number*/
+	flag=0;
+	for (i=0; i<size; i++) {
+		for (j=0; j<size; j++) {
+			if (array[i][j]==0) {
+				flag=1;
+			}
+		}
+	}
+	if (flag==1) {
+		do {
+			newi=random_in_range(0,size);
+			newj=random_in_range(0,size);
+			/*printf("I'm in the loop!\n");*/
+		} while (array[newi][newj]!=0);
+		/*printf("newi=%d, newj=%d\n",newi,newj);*/
+		newnum=random_in_range(1,3);
+		/*printf("newnum=%d\n",2*newnum);*/
+		array[newi][newj]=2*newnum; /*new number must be 2 or 4*/
+	}
 }
 
 /*function to print colored numbers with correct spacing*/
@@ -74,7 +88,7 @@ void print(int x) {
 
 int main(int argc, char *argv[]) {
 	int a[size][size],temp[size]; /*the 4x4 matrix*/
-	int i,j,l/*array indices*/,flag/*game over*/,score,newi,newj,newnum/*indices and magnitude of new inserted number*/,move/*next move*/;
+	int i,j,l/*array indices*/,flag/*game over*/,flag2/*valid move*/,score,newi,newj,newnum/*indices and magnitude of new inserted number*/,move/*next move*/;
 	score=0;
 	flag=0;
 	srand( time( NULL ) ); /*seed the pseudo random number generator with current time*/
@@ -110,6 +124,10 @@ int main(int argc, char *argv[]) {
 	/*-------------------------------------------------------------------------------------------------------------------*/
 	while (flag==0) {
 		flag=1; /*if this won't change to 0 inside the loop, game is over*/
+		flag2=0; /*if this changes to 1, it was a valid move*/
+		for (i=0; i<size; i++) {
+			temp[i]=0;
+		}
 		/*read next move with getch() function to use arrow keys without pressing ENTER*/
 		move=getch();
 		if (move==0 || move==0xE0) move=getch();
@@ -117,6 +135,12 @@ int main(int argc, char *argv[]) {
 		/*up*/
 		if (move==72) {
 			for (j=0; j<size; j++){
+				/*first check for valid move*/
+				for (i=0; i<size-1; i++) {
+					if (a[i][j]==0 && a[i+1][j]!=0) {
+						flag2=1;
+					}
+				}
 				/*keep non-zero cells, put them in row with temp array and delete them from a*/
 				l=0;
 				for (i=0;i<size;i++) {
@@ -132,7 +156,7 @@ int main(int argc, char *argv[]) {
 						temp[i]=temp[i]+temp[i+1];
 						score=score+temp[i];
 						temp[i+1]=0;
-						flag=0; /*there are two equal adjacent cells, so game is not over*/
+						flag2=1; /*second check for valid move*/
 					}
 				}
 				/* keep non-zero cells again and transfer them back to a*/
@@ -149,6 +173,12 @@ int main(int argc, char *argv[]) {
 		/*down*/
 		if (move==80) {
 			for (j=0; j<size; j++){
+				/*first check for valid move*/
+				for (i=3; i>=1; i=i-1) {
+					if (a[i][j]==0 && a[i-1][j]!=0) {
+						flag2=1;
+					}
+				}
 				/*keep non-zero cells, put them in row with temp array and delete them from a*/
 				l=3;
 				for (i=3; i>=0; i=i-1) {
@@ -164,7 +194,7 @@ int main(int argc, char *argv[]) {
 						temp[i+1]=temp[i]+temp[i+1];
 						score=score+temp[i+1];
 						temp[i]=0;
-						flag=0; /*there are two equal adjacent cells, so game is not over*/
+						flag2=1;
 					}
 				}
 				/* keep non-zero cells again and transfer them back to a*/
@@ -180,18 +210,85 @@ int main(int argc, char *argv[]) {
 		
 		/*left*/
 		if (move==75) {
-			
+			for (i=0; i<size; i++){
+				/*first check for valid move*/
+				for (j=0; j<size-1; j++) {
+					if (a[i][j]==0 && a[i][j+1]!=0) {
+						flag2=1;
+					}
+				}
+				/*keep non-zero cells, put them in row with temp array and delete them from a*/
+				l=0;
+				for (j=0;j<size;j++) {
+					if (a[i][j]!=0) {
+						temp[l]=a[i][j];
+						a[i][j]=0;
+						l++;
+					}
+				}
+				/*add adjacent equal cells and add to score*/
+				for (j=0; j<size-1; j++) {
+					if (temp[j]==temp[j+1]){
+						temp[j]=temp[j]+temp[j+1];
+						score=score+temp[j];
+						temp[j+1]=0;
+						flag2=1;
+					}
+				}
+				/* keep non-zero cells again and transfer them back to a*/
+				l=0;
+				for (j=0; j<size; j++) {
+					if (temp[j]!=0){
+						a[i][l]=temp[j];
+						l++;
+					}
+				}
+			}
 		}
 		
 		/*right*/
 		if (move==77) {
-			
+			for (i=0; i<size; i++){
+				/*first check for valid move*/
+				for (j=3; j>=1; j=j-1) {
+					if (a[i][j]==0 && a[i][j-1]!=0) {
+						flag2=1;
+					}
+				}
+				/*keep non-zero cells, put them in row with temp array and delete them from a*/
+				l=3;
+				for (j=3; j>=0; j=j-1) {
+					if (a[i][j]!=0) {
+						temp[l]=a[i][j];
+						a[i][j]=0;
+						l=l-1;
+					}
+				}
+				/*add adjacent equal cells and add to score*/
+				for (j=2; j>=0; j=j-1) {
+					if (temp[j]==temp[j+1]){
+						temp[j+1]=temp[j]+temp[j+1];
+						score=score+temp[j+1];
+						temp[j]=0;
+						flag2=1;
+					}
+				}
+				/* keep non-zero cells again and transfer them back to a*/
+				l=3;
+				for (j=3; j>=0; j=j-1) {
+					if (temp[j]!=0){
+						a[i][l]=temp[j];
+						l=l-1;
+					}
+				}
+			}
 		}
-		
+		/*printf("loop ended\n");*/
 		if (move==72 || move==80 || move==75 || move==77) {
-			srand(time(NULL));
-			insert(a);
-			
+			/*insert new number if there was a valid move*/
+			if (flag2==1) {
+				insert(a);
+			}
 			/*print output*/
 	    	system("cls"); /*clear screen to print new output*/
 			for (i=0; i<=size-1; i++) {
@@ -207,6 +304,28 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			printf("Score: %d\n",score);
+		}
+		/*if there are no zero cells or equal adjacent cells, game over*/
+		for (i=0; i<size; i++) {
+			for (j=0; j<size; j++) {
+				if (a[i][j]==0) {
+					flag=0;
+				}
+			}
+		}
+		for (i=0; i<size; i++) {
+			for (j=0; j<size-1; j++) {
+				if (a[i][j]==a[i][j+1]) {
+					flag=0;
+				}
+			}
+		}
+		for (j=0; j<size; j++) {
+			for (i=0; i<size-1; i++) {
+				if (a[i][j]==a[i+1][j]) {
+					flag=0;
+				}
+			}
 		}
 	}
 	printf("GAME OVER\n");

@@ -125,9 +125,7 @@ int main(int argc, char *argv[]) {
 	while (flag==0) {
 		flag=1; /*if this won't change to 0 inside the loop, game is over*/
 		flag2=0; /*if this changes to 1, it was a valid move*/
-		for (i=0; i<size; i++) {
-			temp[i]=0;
-		}
+		
 		/*read next move with getch() function to use arrow keys without pressing ENTER*/
 		move=getch();
 		if (move==0 || move==0xE0) move=getch();
@@ -135,6 +133,9 @@ int main(int argc, char *argv[]) {
 		/*up*/
 		if (move==72) {
 			for (j=0; j<size; j++){
+				for (i=0; i<size; i++) {
+					temp[i]=0;
+				}
 				/*first check for valid move*/
 				for (i=0; i<size-1; i++) {
 					if (a[i][j]==0 && a[i+1][j]!=0) {
@@ -152,7 +153,7 @@ int main(int argc, char *argv[]) {
 				}
 				/*add adjacent equal cells and add to score*/
 				for (i=0; i<size-1; i++) {
-					if (temp[i]==temp[i+1]){
+					if (temp[i]==temp[i+1] && temp[i]!=0) {
 						temp[i]=temp[i]+temp[i+1];
 						score=score+temp[i];
 						temp[i+1]=0;
@@ -173,6 +174,9 @@ int main(int argc, char *argv[]) {
 		/*down*/
 		if (move==80) {
 			for (j=0; j<size; j++){
+				for (i=0; i<size; i++) {
+					temp[i]=0;
+				}
 				/*first check for valid move*/
 				for (i=3; i>=1; i=i-1) {
 					if (a[i][j]==0 && a[i-1][j]!=0) {
@@ -190,7 +194,7 @@ int main(int argc, char *argv[]) {
 				}
 				/*add adjacent equal cells and add to score*/
 				for (i=2; i>=0; i=i-1) {
-					if (temp[i]==temp[i+1]){
+					if (temp[i]==temp[i+1] && temp[i]!=0){
 						temp[i+1]=temp[i]+temp[i+1];
 						score=score+temp[i+1];
 						temp[i]=0;
@@ -211,6 +215,9 @@ int main(int argc, char *argv[]) {
 		/*left*/
 		if (move==75) {
 			for (i=0; i<size; i++){
+				for (l=0; l<size; l++) {
+					temp[l]=0;
+				}
 				/*first check for valid move*/
 				for (j=0; j<size-1; j++) {
 					if (a[i][j]==0 && a[i][j+1]!=0) {
@@ -228,7 +235,7 @@ int main(int argc, char *argv[]) {
 				}
 				/*add adjacent equal cells and add to score*/
 				for (j=0; j<size-1; j++) {
-					if (temp[j]==temp[j+1]){
+					if (temp[j]==temp[j+1] && temp[j]!=0){
 						temp[j]=temp[j]+temp[j+1];
 						score=score+temp[j];
 						temp[j+1]=0;
@@ -249,6 +256,9 @@ int main(int argc, char *argv[]) {
 		/*right*/
 		if (move==77) {
 			for (i=0; i<size; i++){
+				for (l=0; l<size; l++) {
+					temp[l]=0;
+				}
 				/*first check for valid move*/
 				for (j=3; j>=1; j=j-1) {
 					if (a[i][j]==0 && a[i][j-1]!=0) {
@@ -266,7 +276,7 @@ int main(int argc, char *argv[]) {
 				}
 				/*add adjacent equal cells and add to score*/
 				for (j=2; j>=0; j=j-1) {
-					if (temp[j]==temp[j+1]){
+					if (temp[j]==temp[j+1] && temp[j]!=0){
 						temp[j+1]=temp[j]+temp[j+1];
 						score=score+temp[j+1];
 						temp[j]=0;
@@ -329,5 +339,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	printf("GAME OVER\n");
+	system("pause");
 	return 0;	
 }

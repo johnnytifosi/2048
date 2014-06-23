@@ -1,3 +1,19 @@
+/*2048 sonsole-based game by johnny.tifosi
+Written in Jyne 2014
+Free and open source software
+
+Copyright (C) 2014  johnny.tifosi
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
@@ -107,6 +123,7 @@ int main(int argc, char *argv[]) {
 	insert(a);
 	
 	/*print first output*/
+	printf("2048 game by johnny.tifosi. Play using arrow keys.\n\n");
 	for (i=0; i<=size-1; i++) {
 		for (j=0; j<=size-1; j++) {
 			if (j<3) {
@@ -210,7 +227,91 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
-		}
+		}204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+                                l=3;
+                                for (i=3; i>=0; i=i-1) {
+                                        if (a[i][j]!=0) {
+                                                temp[l]=a[i][j];
+                                                a[i][j]=0;
+                                                l=l-1;
+                                        }
+                                }
+                                /*add adjacent equal cells and add to score*/
+                                for (i=2; i>=0; i=i-1) {
+                                        if (temp[i]==temp[i+1] && temp[i]!=0){
+                                                temp[i+1]=temp[i]+temp[i+1];
+                                                score=score+temp[i+1];
+                                                temp[i]=0;
+                                                flag2=1;
+                                        }
+                                }
+                                /* keep non-zero cells again and transfer them back to a*/
+                                l=3;
+                                for (i=3; i>=0; i=i-1) {
+                                        if (temp[i]!=0){
+                                                a[l][j]=temp[i];
+                                                l=l-1;
+                                        }
+                                }
+                        }
+                }
+                
+                /*left*/
+                if (move==75) {
+                        for (i=0; i<size; i++){
+                                for (l=0; l<size; l++) {
+                                        temp[l]=0;
+                                }
+                                /*first check for valid move*/
+                                for (j=0; j<size-1; j++) {
+                                        if (a[i][j]==0 && a[i][j+1]!=0) {
+                                                flag2=1;
+                                        }
+                                }
+                                /*keep non-zero cells, put them in row with temp array and delete them from a*/
+johnnytifosi
+Commit changes
+
 		
 		/*left*/
 		if (move==75) {
@@ -300,7 +401,8 @@ int main(int argc, char *argv[]) {
 				insert(a);
 			}
 			/*print output*/
-	    	system("cls"); /*clear screen to print new output*/
+	    		system("cls"); /*clear screen to print new output*/
+	    		printf("2048 game by johnny.tifosi. Play using arrow keys.\n\n");
 			for (i=0; i<=size-1; i++) {
 				for (j=0; j<=size-1; j++) {
 					if (j<3) {

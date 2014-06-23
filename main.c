@@ -1,5 +1,5 @@
-/*2048 sonsole-based game by johnny.tifosi
-Written in Jyne 2014
+/*2048 console-based game by johnny.tifosi
+Written in June 2014
 Free and open source software
 
 Copyright (C) 2014  johnny.tifosi

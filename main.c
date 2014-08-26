@@ -24,27 +24,32 @@ GNU General Public License for more details.*/
 #define undos 5
 
 /* Random integer generator within a semi-open interval [min, max) */
-int random_in_range (unsigned int min, unsigned int max)
-{
+int random_in_range (unsigned int min, unsigned int max) {
+	
   int base_random = rand(); /* in [0, RAND_MAX] */
+  
   if (RAND_MAX == base_random) return random_in_range(min, max);
   /* now guaranteed to be in [0, RAND_MAX) */
+  
   int range       = max - min,
       remainder   = RAND_MAX % range,
       bucket      = RAND_MAX / range;
   /* There are range buckets, plus one smaller interval
      within remainder of RAND_MAX */
+  
   if (base_random < RAND_MAX - remainder) {
     return min + base_random/bucket;
-  } else {
+  } 
+  else {
     return random_in_range (min, max);
   }
 }
 
 /*function to insert numbers to empty slots*/
 void insert(int array[size][size]) {
-	/*printf("Entered function insert\n");*/
+	
 	int i,j,newi,newj,newnum,flag;
+	
 	/*check if there is an empty cell to insert number*/
 	flag=0;
 	for (i=0; i<size; i++) {
@@ -76,6 +81,7 @@ void insert(int array[size][size]) {
 void print(int x) {
 	HANDLE  hConsole;
     int k;
+    
 	if (x==0) {
 		k=15;}
 	else if (x==2) {
@@ -100,21 +106,24 @@ void print(int x) {
     	printf("  %d ",x);}
     else if (x<1000) {
     	printf(" %d ",x);}
-    else {
+    else if (x<10000) {
     	printf(" %d",x);}
+    else {
+    	printf("%d",x);}	
     SetConsoleTextAttribute(hConsole, 7);
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------*/
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 int main(int argc, char *argv[]) {
+	
 	int a[size][size]; /*the 4x4 board matrix*/
 	int u[size][size][undos+1]; /*undo stack containing the 5 previous board states*/
 	int points[undos]; /*undo stack containing the points added in eack move*/
 	int temp[size];
 	int i,j,l/*array indices*/,flag/*game over*/,flag2/*valid move*/,score,highscore,newi,newj,newnum/*indices and magnitude of new inserted number*/,move/*next move*/,undos_left/*undo moves available*/,current_points/*points scored in the last move*/;
 	FILE *hs/*highscore file*/, *save/*save file*/;
+	
 	score=0;
 	flag=0;
 	undos_left=undos;
@@ -176,8 +185,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	printf("Score: %d	High Score: %d\n\n",score,highscore);
-	printf("Play using arrow keys. R:reset U:undo (%d available) S:save L:load game\n", undos_left);
-	/*-------------------------------------------------------------------------------------------------------------------*/
+	printf("Play using arrow keys. R:reset U:undo (%d available) S:save game L:load game\n", undos_left);
+	
+	/*-----------------------------------------MAIN LOOP---------------------------------------------*/
+	
 	while (flag==0) {
 		flag=1; /*if this won't change to 0 inside the loop, game is over*/
 		flag2=0; /*if this changes to 1, it was a valid move*/
@@ -350,8 +361,7 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		}
-		
-		
+				
 		if (flag2==1) {
 			/*insert new number if there was a valid move*/
 			insert(a);
@@ -383,6 +393,7 @@ int main(int argc, char *argv[]) {
 			undos_left=5;
 			insert(a);
 			insert(a);
+			
 			/*undo array initialization*/
 			for (i=0; i<=size-1; i++) {
 				for (j=0; j<=size-1; j++) {
@@ -404,12 +415,14 @@ int main(int argc, char *argv[]) {
 		/*UNDO, U button press*/
 		if (move==117 && undos_left>0) {
 			score=score-points[0];
+			
 			/*restore previous board state*/
 			for (i=0; i<=size-1; i++) {
 				for (j=0; j<=size-1; j++) {
 					a[i][j]=u[i][j][1];
 				}
 			}
+			
 			/*move previous board states up in the stack*/
 			for (i=0; i<=size-1; i++) {
 				for (j=0; j<=size-1; j++) {
@@ -424,7 +437,7 @@ int main(int argc, char *argv[]) {
 			undos_left=undos_left-1;
 		}
 		
-		/*SAVE, S button press*/
+		/*SAVE GAME, S button press*/
 		if (move==115) {
 			save=fopen("save.dat","w");
 			for (i=0; i<=size-1; i++) {
@@ -460,6 +473,11 @@ int main(int argc, char *argv[]) {
 				}
 				fscanf(save,"%d\n",&score);
 				fscanf(save,"%d\n",&undos_left);
+				fclose(save);
+				
+				/*delete loaded game to prevent cheating*/
+				remove("save.dat");
+				
 				/*undo array initialization*/
 				for (i=0; i<=size-1; i++) {
 					for (j=0; j<=size-1; j++) {
@@ -477,7 +495,6 @@ int main(int argc, char *argv[]) {
 					}
 				}	
 			}
-			fclose(save);
 		}
 		
 		/*printf("loop ended\n");*/
@@ -514,7 +531,7 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			printf("Score: %d	High Score: %d\n\n",score,highscore);
-			printf("Play using arrow keys. R:reset U:undo (%d available) S:save L:load game\n", undos_left);
+			printf("Play using arrow keys. R:reset U:undo (%d available) S:save game L:load game\n", undos_left);
 			if (move==115) {
 				printf("Game saved.\n");
 			}
